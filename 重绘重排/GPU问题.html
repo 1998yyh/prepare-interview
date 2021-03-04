@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+      .swiper {
+        position: static;
+        animation: 1s move infinite;
+        width: 30vw;
+        height: 50px;
+        border: 1px solid;
+        /* 去掉注释为优化后 */
+        /* z-index: 100; */
+        /* position: relative; */
+      }
+
+      .list {
+        position: relative;
+
+      }
+      li{
+        width: 50vw;
+        height: 50px;
+        border: 1px solid;
+        list-style: none;
+      }
+
+      @keyframes move {
+        100% {
+          transform: translate3d(10px, 0, 0);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="swiper">轮播图</div>
+      <ul class="list">
+        <li>列表li</li>
+        <li>列表li</li>
+        <li>列表li</li>
+        <li>列表li</li>
+      </ul>
+    </div>
+  </body>
+
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>JS阻塞测试</title>
+  <style>
+    #container {
+      /* position: relative; */
+      width: 100px;
+      height: 100px;
+      contain: layout;
+      border: 1px solid;
+    }
+    .animte{
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 50px;
+      background-color: red;
+      height: 20px;
+      animation: move 2s linear 0;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes move {
+        from{
+          left: -100%;
+        }
+        to{
+          left: 100%;
+        }
+    }
+  </style>
+  <script>
+    // 尝试获取container元素
+    var container = document.getElementById("container")
+    console.log('container', container)
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div class="animte"></div>
+  </div>
+  <script>
+    // 尝试获取container元素
+    var container = document.getElementById("container")
+    console.log('container', container)
+    // 输出container元素此刻的背景色
+    console.log('container bgColor', getComputedStyle(container).backgroundColor)
+  </script>
+  <style>
+    #container {
+      /* background-color: blue; */
+    }
+  </style>
+
+
+
+  <button>点击测试</button>
+  <script>
+    document.querySelector('button').onclick = function(){
+      var a = document.querySelector('#container').offsetHeight;
+      console.log('a',a)
+    }
+  </script>
+</body>
+</html>

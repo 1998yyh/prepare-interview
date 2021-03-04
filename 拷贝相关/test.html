@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+
+  <body>
+    <script>
+      function createData(deep, breadth) {
+        var data = {};
+        var temp = data;
+
+        for (var i = 0; i < deep; i++) {
+          temp = temp['data'] = {};
+          for (var j = 0; j < breadth; j++) {
+            temp[j] = c;
+          }
+        }
+
+        return data;
+      }
+
+
+      function cloneForce(x) {
+        // =============
+        const uniqueList = []; // 用来去重
+        // =============
+        const root = Object.prototype.toString.call(x) === '[object Array]' ? [] : {};;
+        // 循环数组
+        const loopList = [{
+          parent: root,
+          key: undefined,
+          data: x,
+        }];
+
+        while (loopList.length) {
+          // 深度优先
+          const node = loopList.pop();
+          const parent = node.parent;
+          const key = node.key;
+          const data = node.data;
+
+          // 初始化赋值目标，key为undefined则拷贝到父元素，否则拷贝到子元素
+          let res = parent;
+          if (typeof key !== 'undefined') {
+            res = parent[key] = Object.prototype.toString.call(parent[key]) === '[object Array]' ? [] : {};
+          }
+
+          // =============
+          // 数据已经存在
+          let uniqueData = find(uniqueList, data);
+          if (uniqueData) {
+            parent[key] = uniqueData.target;
+            break; // 中断本次循环
+          }
+
+          // 数据不存在
+          // 保存源数据，在拷贝数据中对应的引用
+          uniqueList.push({
+            source: data,
+            target: res,
+          });
+          // =============
+
+          Object.keys(data).forEach((k) => {
+            if (typeof data[k] === 'object') {
+              // 下一次循环
+              loopList.push({
+                parent: res,
+                key: k,
+                data: data[k],
+              });
+            } else {
+              res[k] = data[k];
+            }
+          })
+        }
+
+        return root;
+      }
+
+      function find(arr, item) {
+        for (let i = 0; i < arr.length; i++) {
+          if (arr[i].source === item) {
+            return arr[i];
+          }
+        }
+
+        return null;
+      }
+
+      var b = createData(1, 10000000)
+      console.time();
+      var c = JSON.parse(JSON.stringify(b))
+      console.timeEnd()
+
+      console.time();
+      var d = cloneForce(b)
+      console.timeEnd()
+
+      
+      // var b = createData(40,400)
+      // console.log(b)
+      // console.time();
+      // var c = JSON.parse(JSON.stringify(b))
+      // console.timeEnd()
+
+      // console.time();
+      // var d = cloneForce(b)
+      // console.timeEnd()
+    </script>
+  </body>
+
+</html>
