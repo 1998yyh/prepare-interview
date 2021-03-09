@@ -1,6 +1,8 @@
 function cloneForce(x) {
   // =============
   const uniqueList = []; // 用来去重
+  // weakmap = new weakMap;
+  // weakmap是否是更好一点
   // =============
   const root = Object.prototype.toString.call(x) === '[object Array]' ? [] : {};;
   // 循环数组
