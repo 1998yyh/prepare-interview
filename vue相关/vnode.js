@@ -1,6 +1,7 @@
-export default function(sel,data,children,text,elm,key){
+export default function(tag,data,children,text,elm){
+  const key = data.key;
   return {
-    sel,
+    tag,
     data,
     children,
     text,

@@ -6,11 +6,12 @@ const container = document.querySelector('#container');
 const btn = document.querySelector('button');
 
 const myVnode = h('p',{},'你好');
-const myVnode3 = h('p',{},'xxxxxxxxxxxxx');
+const myVnode3 = h('p',{},[
+  h('div',{},'xx')
+]);
 
 const myVnode1 = h(
   'ul',{},[
-    h('li',{key:'app'},'app'),
     h('li',{key:'aaa'},'aaa'),
     h('li',{key:'bbb'},'bbb'),
   ]
@@ -25,11 +26,10 @@ const myVnode2 = h(
     h('li',{key:'ddd'},'ddd'),
   ]
 );
-
-patch(container,myVnode);
+patch(container,myVnode1);
 
 btn.onclick = function(){
-  patch(myVnode,myVnode3);
+  patch(myVnode1,myVnode2);
 };
 
 const templateStr = `<div>
@@ -44,4 +44,4 @@ const templateStr = `<div>
     </div>
   </div>`;
 
-parseHtml(templateStr);
+console.log(parseHtml(templateStr));
