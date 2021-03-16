@@ -1,6 +1,7 @@
 import parseHtml from '../vue相关/ast';
 import h from '../vue相关/h';
 import patch from '../vue相关/patch';
+import observe from '../vue相关/observe';
 
 const container = document.querySelector('#container');
 const btn = document.querySelector('button');
@@ -45,3 +46,13 @@ const templateStr = `<div>
   </div>`;
 
 console.log(parseHtml(templateStr));
+
+const data = {
+  name:'aa',
+  age:18,
+  arr:[1,2,3]
+};
+
+observe(data);
+
+data.arr.push(11);
