@@ -2,6 +2,7 @@ import parseHtml from '../vue相关/ast';
 import h from '../vue相关/h';
 import patch from '../vue相关/patch';
 import observe from '../vue相关/observe';
+import Watcher from '../vue相关/Watcher';
 
 const container = document.querySelector('#container');
 const btn = document.querySelector('button');
@@ -50,9 +51,18 @@ console.log(parseHtml(templateStr));
 const data = {
   name:'aa',
   age:18,
-  arr:[1,2,3]
+  arr:[12,3,4],
+  a:{
+    b:{
+      c:1
+    }
+  }
 };
-
 observe(data);
+new Watcher(data,'a.b.c',()=>{
+  console.log('asdasdjkasldjslajdljasdlaskjl');
+});
+data.a.b.c = 1111;
 
-data.arr.push(11);
+// console.log(data);
+// data.name = 111;

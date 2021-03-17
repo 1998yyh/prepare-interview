@@ -1,43 +1,104 @@
-const arrayProto = Array.prototype;
-const newArrayProto = Object.create(arrayProto);
+import Dep from './Dep';
 
-['push','pop','shift','unshift','splice','slice'].forEach(method=>{
-  newArrayProto[method] = function(){
-    console.log('更新视图');
-    arrayProto[method].call(this,...arguments);
-  };
+// 处理数组
+const arrayproto  = Array.prototype;
+const newArrayProto = Object.create(arrayproto);
+
+['push','pop','shift','unshift','splice','slice'].forEach((method)=>{
+  const origin = newArrayProto[method];
+
+  def(newArrayProto,method,function(){
+    const ob = this.__ob__;
+    let inserted = '';
+    switch(method){
+      case 'push':
+      case 'unshift':
+        inserted = arguments;
+        break;
+      case 'splice':
+        inserted = arguments.slice(2);
+        break;
+      default:
+        break;
+    }
+    if(inserted){
+      ob.observeArray(inserted);
+    }
+    ob.dep.notify();
+    const result = origin.call(this,...arguments);
+    return result;
+  },false);
 });
 
-export default function observe(taget) {
-  if (typeof taget !== 'object' || taget === null) {
-    return taget;
+class Observer {
+  constructor(value) {
+    this.dep = new Dep();
+    def(value,'__ob__',this,false);
+    if(Array.isArray(value)){
+      Object.setPrototypeOf(value,newArrayProto);
+      this.observeArray(value);
+    }else{
+      this.walk(value);
+    }
+    
   }
-
-  // 处理数组
-  if(Array.isArray(taget)){
-    taget.__proto__ = newArrayProto;
+  walk(value){
+    Object.keys(value).forEach(v=>{
+      defineReactive(value,v);
+    });
   }
-
-  for (let key in taget) {
-    defineReactive(taget, key, taget[key]);
+  observeArray(arr){
+    for(let i = 0,len = arr.length;i<len;i++){
+      observe(arr[i]);
+    }
   }
 }
 
-function defineReactive(taget, key, value) {
-  // 深度监听
-  observe(value);
-  Object.defineProperty(taget, key, {
-    get() {
+function def(obj,key,value,enumerable){
+  Object.defineProperty(obj,key,{
+    enumerable,
+    value,
+    writable:true,
+    configurable:true
+  });
+}
+
+function observe(value) {
+  if (typeof value !== 'object') return;
+
+  let ob;
+  if (typeof value.__ob__ !== 'undefined') {
+    ob = value.__ob__;
+  } else {
+    ob = new Observer(value);
+  }
+  return ob;
+}
+
+function defineReactive(data,key,value=data[key]){
+  const dep = new Dep();
+  let childOb = observe(value);
+  Object.defineProperty(data,key,{
+    // 可枚举
+    enumerable:true,
+    // 可配置
+    configurable:true,
+    get(){
+      if(Dep.target){
+        dep.depend();
+        if(childOb){
+          childOb.dep.depend();
+        }
+      }
       return value;
     },
-    set(newValue) {
-      // 防止从基本类型变为对象监听丢失。
+    set(newValue){
+      if(value === newValue)return;
       observe(newValue);
-      if (newValue !== value) {
-        value = newValue;
-        console.log('更新视图');
-      }
+      value = newValue;
+      dep.notify();
     }
   });
-
 }
+
+export default observe;
