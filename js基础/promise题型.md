@@ -1,4 +1,4 @@
-# 相关15个题
+# 相关题
 
 1.输出的值
 ``` javascript
@@ -175,16 +175,121 @@ setImmediate
 
 11.红灯3秒亮一次，绿灯1秒亮一次，黄灯2秒亮一次；如何使用Promise让三个灯不断交替重复亮灯？
 ``` javascript
-
+function red() {
+  console.log('red');
+}
+function green() {
+  console.log('green');
+}
+function yellow() {
+  console.log('yellow');
+}
+let myLight = (timer, cb) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      cb();
+      resolve();
+    }, timer);
+  });
+};
+let myStep = () => {
+  Promise.resolve().then(() => {
+    return myLight(3000, red);
+  }).then(() => {
+    return myLight(2000, green);
+  }).then(()=>{
+    return myLight(1000, yellow);
+  }).then(()=>{
+    myStep();
+  })
+};
+myStep();
 ```
 
+12.请实现一个mergePromise函数，把传进去的数组按顺序先后执行，并且把返回的数据先后放到数组data中。
 ``` javascript
+const timeout = ms => new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve();
+    }, ms);
+});
 
+const ajax1 = () => timeout(2000).then(() => {
+    console.log('1');
+    return 1;
+});
+
+const ajax2 = () => timeout(1000).then(() => {
+    console.log('2');
+    return 2;
+});
+
+const ajax3 = () => timeout(2000).then(() => {
+    console.log('3');
+    return 3;
+});
+
+const mergePromise = ajaxArray => {
+    // 在这里实现你的代码
+    let sq = Promise.resolve();
+    let data = []
+    ajaxArray.forEach(item=>{
+      sq = sq.them(item).then((res)=>{
+        data.push(res)
+        return data
+      })
+    })
+    return sq
+};
+
+mergePromise([ajax1, ajax2, ajax3]).then(data => {
+    console.log('done');
+    console.log(data); // data 为 [1, 2, 3]
+});
 ```
+
+13.现有8个图片资源的url，已经存储在数组urls中，且已有一个函数function loading，输入一个url链接，返回一个Promise，该Promise在图片下载完成的时候resolve，下载失败则reject。
 ``` javascript
+function loadImg(url) {
+    return new Promise((resolve, reject) => {
+        const img = new Image()
+        img.onload = () => {
+            console.log('一张图片加载完成');
+            resolve();
+        }
+        img.onerror = reject;
+        img.src = url;
+    })
+};
 
-```
+function limitLoad(urls, handler, limit) {
+  // 对数组做一个拷贝
+  const sequence  = [...urls];
+  let promises  = [];
+  promises  = urls.splice(0,limit).map((url,index)=>{
+    return handler(url).then(()=>{
+      return index
+    })
+  })
 
-``` javascript
-
+  let p = Promise.race(promise);
+  return sequence.reduce((last, url, currentIndex) => {
+    return last.then(() => {
+      // 返回最快改变状态的 Promise
+      return Promise.race(promises)
+    }).catch(err => {
+      // 这里的 catch 不仅用来捕获前面 then 方法抛出的错误
+      // 更重要的是防止中断整个链式调用
+      console.error(err)
+    }).then((res) => {
+      // 用新的 Promise 替换掉最快改变状态的 Promise
+      promises[res] = handler(sequence[currentIndex]).then(() => {
+        return res
+      });
+    })
+  }, Promise.resolve()).then(()=>{
+    return Promise.all(promises)
+  })
+}
+limitLoad(urls, loadImg, 3);
 ```
