@@ -4,31 +4,31 @@ class Publisher {
   }
 
   add(observer) {
-    this.observers.push(observer)
+    this.observers.push(observer);
   }
 
   remove(observer) {
     this.observers.forEach((v, i) => {
       if (v === observer) {
-        this.observers.splice(i, 1)
+        this.observers.splice(i, 1);
       }
-    })
+    });
   }
 
   notify() {
     this.observers.forEach(v => {
       v.update(this);
-    })
+    });
   }
 }
 
 class Observer {
   constructor() {
-    console.log('observe constructor')
+    console.log('observe constructor');
   }
 
   update() {
-    console.log('observer base update')
+    console.log('observer base update');
   }
 }
 
@@ -39,7 +39,7 @@ class PrdPublisher extends Publisher {
     this.observers = [];
   }
   getState() {
-    return this.prd
+    return this.prd;
   }
 
   setState(_prd) {
@@ -62,6 +62,6 @@ class DeveloperObserver extends Observer {
 
   work() {
     if (!this.prd) return;
-    console.log('this.prd',this.prd)
+    console.log('this.prd',this.prd);
   }
 }
