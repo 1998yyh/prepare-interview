@@ -15,7 +15,7 @@ export default class Watcher {
   }
 
   get() {
-    // 进入依赖手机
+    // 进入依赖收集
     Dep.target = this;
     const obj = this.target;
     let value;
@@ -35,7 +35,8 @@ export default class Watcher {
     if(this.value !== value || typeof value === 'object'){
       const oldValue = this.value;
       this.value = value;
-      cb(this.target,value,oldValue);
+      console.log('value',value);
+      cb.call(this.target,value,oldValue);
     }
   }
 

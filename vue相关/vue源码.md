@@ -8,6 +8,19 @@ Object.defineProperty;
 1.删除data中属性 Vue.delete
 2.data中添加属性 Vue.set
 
+## watcher dep
+每一个observe的实例 就会有一个dep的实例
+
+watcher 是个中介 通知组件更新
+
+'touch' =》 值得是用户用了data中的数据 比如 {{a}}
+
+在getter中收集依赖，调用dep中的depend方法
+在setter中触发依赖，调用dep中的notify方法
+收集和触发的都是watcher
+
+watcher把自己设置到全局的一个指定位置，然后读取数据，读取了数据，就会触发这个数据的getter，getter中就能得到当前读取的watcher，并把它收集到dep中。
+
 ## 虚拟DOM与diff算法
 
 1. patch函数：用于处理新旧节点的函数；

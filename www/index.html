@@ -9,6 +9,25 @@
 <body>
   <button>按一下</button>
   <div id="container"></div>
+  <div id="app">
+      <h1>aa</h1>
+      {{a}}aa
+  </div>
   <script src="./xuni/bundle.js"></script>
+  <script>
+    const b  = new _vue({
+      el:'#app',
+      data:{
+        a:10
+      },
+      watch:{
+        a(){
+          console.log(1111);
+        }
+      }
+    });
+
+    b._data.a = 20;
+  </script>
 </body>
 </html>

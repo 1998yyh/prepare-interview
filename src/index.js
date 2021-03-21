@@ -3,7 +3,9 @@ import h from '../vue相关/h';
 import patch from '../vue相关/patch';
 import observe from '../vue相关/observe';
 import Watcher from '../vue相关/Watcher';
+import _vue from '../vue相关/_vue';
 
+window._vue = _vue;
 const container = document.querySelector('#container');
 const btn = document.querySelector('button');
 
@@ -60,7 +62,7 @@ const data = {
 };
 observe(data);
 new Watcher(data,'a.b.c',()=>{
-  console.log('asdasdjkasldjslajdljasdlaskjl');
+  // console.log('asdasdjkasldjslajdljasdlaskjl');
 });
 data.a.b.c = 1111;
 
