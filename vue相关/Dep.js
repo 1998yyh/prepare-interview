@@ -1,7 +1,6 @@
 let uid = 0;
 export default class Dep {
   constructor() {
-    // console.log('dep');
     this.id = uid++;
     this.subs = [];
   }

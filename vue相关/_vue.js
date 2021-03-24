@@ -26,7 +26,6 @@ export default class _vue {
 
         }
       });
-      console.log(key);
     });
   }
 

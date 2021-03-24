@@ -46,16 +46,14 @@ export default class Compile{
       let value = attr.value;
       let dir = attrName.substring(2);
       if(attrName.indexOf('v-') === 0){
-        console.log(1111);
+        // console.log(1111);
       }
     });
   }
 
   compileText(node,name){
-    console.log(node,this.$vue);
     node.textContent = this.getVueVal(this.$vue,name);
     new Watcher(this.$vue._data,name,newVal=>{
-      console.log('newVal',newVal);
       node.textContent = newVal;
     });
     

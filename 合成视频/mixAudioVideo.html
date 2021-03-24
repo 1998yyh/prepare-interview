@@ -1,64 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
 
-<body>
-  <div>这是原视频</div>
-  <video  src="./bj.mp4"  controls height="344" width="412"></video>
-  <div>这是音频</div>
-  <audio controls src="./record.mp3"></audio>
-  <div>合成视频操作测试</div>
-  <video id="player" controls height="344" width="412"></video>
-  <div>合成进度条</div>
-  <progress value="0" max="1"></progress> 
-  <div>
-    <button>点击合成</button>
-  </div>
-  <script src="../node_modules/@ffmpeg/ffmpeg/dist/ffmpeg.min.js"></script>
-  <script>
-    const {
-      createFFmpeg,
-      fetchFile
-    } = FFmpeg;
-    const ffmpeg = createFFmpeg({
-      log: true,
-    });
-    const btn = document.querySelector('button');
-    const progress = document.querySelector('progress');
-    (async ()=>{
-      await ffmpeg.load();
+  <body>
+    <div>这是原视频</div>
+    <video src="./bj.mp4" controls height="344" width="412"></video>
+    <div>这是音频</div>
+    <audio controls src="./record.mp3"></audio>
+    <div>合成视频操作测试</div>
+    <video id="player" controls height="344" width="412"></video>
+    <div>合成进度条</div>
+    <progress value="0" max="1"></progress>
+    <div>
+      <button>点击合成</button>
+    </div>
+    <script src="../node_modules/@ffmpeg/ffmpeg/dist/ffmpeg.min.js"></script>
+    <script>
+      const {
+        createFFmpeg,
+        fetchFile
+      } = FFmpeg;
+      const ffmpeg = createFFmpeg({
+        log: true,
+      });
+      const btn = document.querySelector('button');
+      const progress = document.querySelector('progress');
+      (async () => {
+        await ffmpeg.load();
 
-const dataInputVideo = await fetchFile('bj.mp4');
-const dataInputAudio = await fetchFile('record.mp3');
-console.time();
-ffmpeg.FS('writeFile', 'bj.mp4', dataInputVideo);
-ffmpeg.FS('writeFile', 'record.mp3', dataInputAudio);
-ffmpeg.setProgress(({ ratio }) => {
-  // console.log('ratio',ratio);
-  progress.setAttribute('value',ratio);
-  /*
-  * ratio is a float number between 0 to 1.
-  */
-});
-    })();
+        const dataInputVideo = await fetchFile('bj.mp4');
+        const dataInputAudio = await fetchFile('record.mp3');
+        console.time();
+        ffmpeg.FS('writeFile', 'bj.mp4', dataInputVideo);
+        ffmpeg.FS('writeFile', 'record.mp3', dataInputAudio);
+        ffmpeg.setProgress(({
+          ratio
+        }) => {
+          // console.log('ratio',ratio);
+          progress.setAttribute('value', ratio);
+          /*
+           * ratio is a float number between 0 to 1.
+           */
+        });
+      })();
 
-    btn.onclick = async ()=>{
+      btn.onclick = async () => {
 
         // ffmpeg -i video.mp4 -i audio.wav -c:v copy -c:a aac -strict experimental -map 0:v:0 -map 1:a:0 output.mp4
-        await ffmpeg.run('-i', 'bj.mp4', '-i', 'record.mp3', '-c:v', 'copy', '-c:a', 'aac', '-strict', 'experimental', '-map', '0:v:0', '-map', '1:a:0', 'output.mp4');
+        await ffmpeg.run('-i', 'bj.mp4', '-i', 'record.mp3', '-c:v', 'copy', '-c:a', 'aac', '-strict',
+          'experimental', '-map', '0:v:0', '-map', '1:a:0', 'output.mp4');
 
         const data = ffmpeg.FS('readFile', 'output.mp4');
+        console.log(data)
         const video = document.getElementById('player');
         console.timeEnd();
-        video.src = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
-    };
-  </script>
-</body>
+        video.src = URL.createObjectURL(new Blob([data.buffer], {
+          type: 'video/mp4'
+        }));
+      };
+    </script>
+  </body>
 
 </html>

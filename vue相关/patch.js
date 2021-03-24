@@ -31,12 +31,10 @@ function createElement (vnode) {
   if (oldVnode === newVnode) return;
   // 新节点有text属性，且没有children
   if (newVnode.text !== undefined && (vnode.children === undefined || vnode.children.length === 0)) {
-    console.log('新节点有text属性');
     if (newVnode.text !== oldVnode.text) {
       oldVnode.elm.innerText = newVnode.text;
     }
   } else {
-    console.log('新节点没有text属性');
     // 判断老节点是否有children
     if (oldVnode.children !== undefined && oldVnode.children.length > 0) {
       updateChildren(oldVnode.elm,oldVnode.children,newVnode.children);
