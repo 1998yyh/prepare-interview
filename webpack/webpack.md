@@ -94,3 +94,36 @@ done  -> AsyncSeriesHook
 
 ### compilation 
 compilation 是 compiler钩子中回调函数的参数.
+帮助我们对资源做修改，
+
+比如 buildModule  钩子 在模块构建开始之前触发，可以用来修改模块。
+比如 additionalAssets 钩子 用来创建额外资源  
+
+```javascript
+class Plugins2 {
+  apply(compiler) {
+    compiler.hooks.thisCompilation.tap('Plugins2', (compilation) => {
+      // 异步钩子使用tapAsync
+      compilation.hooks.additionalAssets.tapAsync('Plugin2', async (cb) => {
+        // 普通方法需要我们知道需要的内容和 比较死板
+        const content = 'hello';
+        compilation.assets['a.txt'] = {
+          size() {
+            return content.length;
+          },
+          source() {
+            return content;
+          }
+        };
+        const data = await readFile(path.resolve(__dirname, 'b.txt'));
+        // webpack 4的方法
+        // compilation.assets['b.txt'] = new RawSource(data);
+        // webpack 5的方法
+        compilation.emitAsset('b.txt', new RawSource(data));
+        // 执行完成
+        cb();
+      });
+    });
+  }
+}
+```
