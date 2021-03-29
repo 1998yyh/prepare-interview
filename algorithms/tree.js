@@ -142,13 +142,122 @@ function fn(n, k) {
 // 前  =》 栈
 function preorderTraversal(root) {
   const stack = [];
+  const result = []
   stack.push(root);
 
-  while (stack) {
-
+  while (stack.length) {
+    const node = stack.pop();
+    result.push(node.val)
+    if(node.right){
+      stack.push(node.right);
+    }
+    if(node.left){
+      stack.push(node.left)
+    }
   }
+  return result;
 }
 
-function postorderTraversal() {
 
+
+// 后续
+function postorderTraversal(root) {
+  const stack = [];
+  const result = [];
+  stack.push(root)
+
+  while(stack.length){
+    const node = stack.pop();
+    result.unshift(node.val)
+
+
+    if(node.left){
+      stack.push(node.left)
+    }
+
+
+    if(node.right){
+      stack.push(node.right)
+    }
+
+
+    
+  }
+  return result
 }
+
+// 中序遍历  a b c
+function inorderTraversal(root){
+  const result = [];
+  const stack = [];
+  const cur = root;
+
+  while(cur || stack.length){
+    while(cur){
+      stack.push(cur);
+      cur = cur.left;
+    }
+    cur = stack.pop();
+    result.push(node.val);
+    cur =  cur.right;
+  }
+
+  return result;
+}
+
+// 按层返回节点值
+function levelOrder(root){
+  const stack  = [];
+  const result = [];
+  stack.push(root);
+  while(stack.length){
+    const quee = [];
+    for(let i  = 0,len = stack.length;i<len;i++){
+      const node = stack.shift();
+      quee.push(node.val)
+      if(node.left){
+        stack.push(node.left)
+      }
+      if(node.right){
+        stack.push(node.right);
+      }
+    }
+    result.push(quee)
+  }
+  return result;
+}
+
+// 递归 翻转二叉树 
+function invertTree(root){
+  if(!root){
+    return root
+  }
+  const left  = invertTree(root.left);
+  const right = invertTree(root.right);
+  root.left = right;
+  root.right = left;
+  return root;
+}
+
+// 栈 翻转二叉树 
+// 本质还是个对象 利用对象引用类型
+function invertTree2(root){
+  if(!root){
+    return;
+  }
+  const stack = [];
+  stack.push(root);
+
+  while(stack.length){
+    const cur =  stack.pop();
+    [cur.left,cur.right] = [cur.right,cur.left];
+    if(cur.left){
+      stack.push(cur.left);
+    }
+    if(cur.right){
+      stack.push(cur.right);
+    }
+  }
+  return root;
+}
+
