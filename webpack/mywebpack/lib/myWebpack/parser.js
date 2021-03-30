@@ -42,12 +42,12 @@ const parser = {
   },
   getCode(ast) {
     // 编译代码
-    const code = transformFromAst(ast, null, {
+    const result = transformFromAst(ast, null, {
       // 预设
       presets: ['@babel/preset-env']
     });
 
-    return code;
+    return result.code;
   }
 };
 

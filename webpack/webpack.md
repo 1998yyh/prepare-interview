@@ -127,3 +127,103 @@ class Plugins2 {
   }
 }
 ```
+
+
+### myWebpack
+手撕一个简单的webpack
+
+webpack本质是一个Compiler的实例，Compiler类上有一个run方法启动打包；
+
+Compiler是一个类，接收options对象。
+
+run方法执行步骤：
+1.读取入口文件内容。
+2.解析成AST语法树,使用babel的babelParser来生成ast语法树
+3.根据asy语法树body的 ImportDeclaration 来收集依赖  babel中的 traverse 来收集依赖
+4.编译代码   babel中的 transformFromAst 来收集依赖
+5.遍历所有依赖 执行2-4步
+6.生成bundle  
+
+
+
+## 热更新原理
+热更新 webpack-dev-server 主要是启动服务器，连接websocket服务。
+核心的更新原理 是 webpack-dev-middleware 库。
+
+
+步骤
+1.启动webpack，生成compiler实例
+2.使用express框架启动本地server，让浏览器可以请求本地的静态资源。
+3.本地server启动之后，再去启动websocket服务，建立本地服务和浏览器的双向通信。这样就可以实现当本地文件发生变化，立马告知浏览器可以热更新代码
+4.会修改入口文件，将clientEntry(websocket客户端代码)和 hotEntry (热更新代码) 添加到配置的入口之前
+5.注册监听事件的，监听每次webpack编译完成即监听 done 钩子触发  然后调用websocket 发送消息
+
+6.执行compiler.watch()方法 
+ webpack监听文件变化
+ 1. 首先对本地文件代码进行编译打包，也就是webpack的一系列编译流程。
+ 2. 其次编译结束后，开启对本地文件的监听，当文件发生变化，重新编译，编译完成之后继续监听。
+7.执行setFs方法,依赖memory-fs库，将输出的文件写在内存中，访问内存中文件更快。
+8.浏览器如何收到消息
+``` javascript
+// webpack-dev-server/client/index.js
+var socket = require('./socket');
+var onSocketMessage = {
+    hash: function hash(_hash) {
+        // 更新currentHash值
+        status.currentHash = _hash;
+    },
+    ok: function ok() {
+        sendMessage('Ok');
+        // 进行更新检查等操作
+        reloadApp(options, status);
+    },
+};
+// 连接服务地址socketUrl，?http://localhost:8080，本地服务地址
+socket(socketUrl, onSocketMessage);
+
+function reloadApp() {
+	if (hot) {
+        log.info('[WDS] App hot update...');
+        
+        // hotEmitter其实就是EventEmitter的实例
+        var hotEmitter = require('webpack/hot/emitter');
+        hotEmitter.emit('webpackHotUpdate', currentHash);
+    } 
+}
+/**
+ * 
+ * 热更新检查事件是调用reloadApp方法。比较奇怪的是，这个方法又利用node.js的EventEmitter，发出webpackHotUpdate消息。这是为什么？为什么不直接进行检查更新呢？
+  个人理解就是为了更好的维护代码，以及职责划分的更明确。websocket仅仅用于客户端（浏览器）和服务端进行通信。而真正做事情的活还是交回给了webpack。  
+/
+```
+webpack收到 webpackHotUpdate后的操作
+``` javascript 
+
+// node_modules/webpack/hot/dev-server.js
+var check = function check() {
+    module.hot.check(true)
+        .then(function(updatedModules) {
+            // 容错，直接刷新页面
+            if (!updatedModules) {
+                window.location.reload();
+                return;
+            }
+            // 热更新结束，打印信息
+            if (upToDate()) {
+                log("info", "[HMR] App is up to date.");
+            }
+    })
+        .catch(function(err) {
+            window.location.reload();
+        });
+};
+var hotEmitter = require("./emitter");
+hotEmitter.on("webpackHotUpdate", function(currentHash) {
+    lastHash = currentHash;
+    check();
+});
+// 这里webpack监听到了webpackHotUpdate事件，并获取最新了最新的hash值，然后终于进行检查更新了
+```
+
+9.module.hot.check -> HotModuleReplacementPlugin
+上一步监听到 webpackHotUpdate 后调用了 module.hot.check方法。

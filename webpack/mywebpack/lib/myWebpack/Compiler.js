@@ -1,6 +1,7 @@
 const {getAst,getCode,getDeps}  = require('./parser');
 const fs = require('fs');
 const path = require('path');
+const { debug } = require('webpack');
 
 class Compiler {
   constructor(options = {}) {
@@ -29,6 +30,7 @@ class Compiler {
         
         const absolutePath = deps[relativePath];
         const fileInfo = this.build(absolutePath);
+        debugger
         this.modules.push(fileInfo);
       }
     });
@@ -44,7 +46,6 @@ class Compiler {
       };
     },{});
 
-    console.log(depsGraph);
     this.generate(depsGraph);
   }
 
@@ -84,7 +85,7 @@ class Compiler {
           }
 
           // 模块要暴露的对象都会在这里面
-          var exports = {}
+          var exports = {};
           (function (require,exports,code){
             eval(code);
           })(localRequire,exports,depsGraph[module].code)
