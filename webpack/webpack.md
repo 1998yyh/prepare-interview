@@ -227,3 +227,7 @@ hotEmitter.on("webpackHotUpdate", function(currentHash) {
 
 9.module.hot.check -> HotModuleReplacementPlugin
 上一步监听到 webpackHotUpdate 后调用了 module.hot.check方法。
+10.利用上一次保存的hash值，调用hotDownloadManifest发送xxx/hash.hot-update.json的ajax请求；请求结果获取热更新模块，以及下次热更新的Hash 标识，并进入热更新准备阶段。调用hotDownloadUpdateChunk发送xxx/hash.hot-update.js 请求，通过JSONP方式。因为JSONP获取的代码可以直接执行。
+11.调用hotApply进行代码替换。
+hotApply主要做的操作是：
+删除过期的模块，将新的模块添加到modules中，执行模块的代码。
