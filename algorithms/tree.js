@@ -148,10 +148,10 @@ function preorderTraversal(root) {
   while (stack.length) {
     const node = stack.pop();
     result.push(node.val)
-    if(node.right){
+    if (node.right) {
       stack.push(node.right);
     }
-    if(node.left){
+    if (node.left) {
       stack.push(node.left)
     }
   }
@@ -166,59 +166,59 @@ function postorderTraversal(root) {
   const result = [];
   stack.push(root)
 
-  while(stack.length){
+  while (stack.length) {
     const node = stack.pop();
     result.unshift(node.val)
 
 
-    if(node.left){
+    if (node.left) {
       stack.push(node.left)
     }
 
 
-    if(node.right){
+    if (node.right) {
       stack.push(node.right)
     }
 
 
-    
+
   }
   return result
 }
 
 // 中序遍历  a b c
-function inorderTraversal(root){
+function inorderTraversal(root) {
   const result = [];
   const stack = [];
   const cur = root;
 
-  while(cur || stack.length){
-    while(cur){
+  while (cur || stack.length) {
+    while (cur) {
       stack.push(cur);
       cur = cur.left;
     }
     cur = stack.pop();
     result.push(node.val);
-    cur =  cur.right;
+    cur = cur.right;
   }
 
   return result;
 }
 
 // 按层返回节点值
-function levelOrder(root){
-  const stack  = [];
+function levelOrder(root) {
+  const stack = [];
   const result = [];
   stack.push(root);
-  while(stack.length){
+  while (stack.length) {
     const quee = [];
-    for(let i  = 0,len = stack.length;i<len;i++){
+    for (let i = 0, len = stack.length; i < len; i++) {
       const node = stack.shift();
       quee.push(node.val)
-      if(node.left){
+      if (node.left) {
         stack.push(node.left)
       }
-      if(node.right){
+      if (node.right) {
         stack.push(node.right);
       }
     }
@@ -228,11 +228,11 @@ function levelOrder(root){
 }
 
 // 递归 翻转二叉树 
-function invertTree(root){
-  if(!root){
+function invertTree(root) {
+  if (!root) {
     return root
   }
-  const left  = invertTree(root.left);
+  const left = invertTree(root.left);
   const right = invertTree(root.right);
   root.left = right;
   root.right = left;
@@ -241,23 +241,135 @@ function invertTree(root){
 
 // 栈 翻转二叉树 
 // 本质还是个对象 利用对象引用类型
-function invertTree2(root){
-  if(!root){
+function invertTree2(root) {
+  if (!root) {
     return;
   }
   const stack = [];
   stack.push(root);
 
-  while(stack.length){
-    const cur =  stack.pop();
-    [cur.left,cur.right] = [cur.right,cur.left];
-    if(cur.left){
+  while (stack.length) {
+    const cur = stack.pop();
+    [cur.left, cur.right] = [cur.right, cur.left];
+    if (cur.left) {
       stack.push(cur.left);
     }
-    if(cur.right){
+    if (cur.right) {
       stack.push(cur.right);
     }
   }
   return root;
 }
 
+
+// 查找数据域为某一特定值的结点 
+// 二叉搜索树
+
+function search(root, target) {
+  if (root.val === target) {
+    return true;
+  }
+
+  if (root.val > target && root.left) {
+    search(root.left, target)
+  } else if (root.val < target && root.right) {
+    search(root.right, target)
+  }
+  return false;
+}
+
+// 在二叉搜索树中插入节点
+
+function insertIntoBST(root, n) {
+  // 如果当前是一个空节点
+  if (!root) {
+    root = new TreeNode(n);
+    return;
+  }
+
+  if (root.val > n) {
+    insertIntoBST(root.right)
+  } else {
+    insertIntoBST(root.left)
+  }
+}
+
+// 删除指定结点  
+
+function deleteNode(root, n) {
+  if (!root) {
+    return root;
+  }
+
+  // 如果正好相同
+  if (root.val === n) {
+    // 如果没有左右子树
+    if(!root.left && !root.right){
+      root = null;
+    }else if(root.left){
+      // 如果存在左子树
+      const max = findMax(root.left)
+      root.val = max.val;
+      deleteNode(root.left,max.val)
+    }else{
+      // 如果存在右子树
+      const min = findMin(root.right)
+      root.val = min.val;
+      deleteNode(root.right,min.val)
+    }
+  } else if (root.val > n) {
+    root.left = deleteNode(root.left, n)
+  } else {
+    root.right = deleteNode(root.right, n)
+  }
+  
+}
+
+function findMax(root){
+  while(root.right){
+    root = root.right
+  }
+  return root;
+}
+
+function findMin(root){
+  while(root.left){
+    root = root.left
+  }
+  return root;
+}
+
+// 将排序数组转化为二叉搜索树
+// [-10,-3,0,5,9]
+
+function sortedArrayToBST(nums){
+  if(!nums.length){
+    return null;
+  }
+  const len = nums.length;
+
+  function buildBST(low,high){
+    if(low > high) {
+      return null
+  }
+    const mid = Math.floor(low+(high-low)/2)
+    const node = new TreeNode(nums[mid]);
+    node.left = buildBST(low,mid - 1);
+    node.right = buildBST(mid+1,high);
+    return node;
+  }
+
+  return buildBST(0,len-1)
+}
+
+// 二叉搜索树的验证
+function isValidBST(root){
+  function dfs(node,maxVal,minVal){
+    if(!node){
+      return true
+    }
+    if(root.val <= minValue || root.val >= maxValue) return false
+    return dfs(node.left,minVal,node.val) && dfs(node.right,node.val,maxVal)
+  }
+  dfs(root,Infinity,-Infinity)
+}
