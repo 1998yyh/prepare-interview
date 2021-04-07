@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+</head>
+
+<body>
+  <!-- 圣杯 -->
+  <section>圣杯</section>
+  <style>
+    .sb-con {
+      height: 40px;
+      padding: 0 100px;
+      overflow: auto;
+    }
+
+    .sb-main {
+      float: left;
+      width: 100%;
+      background-color: rebeccapurple;
+      height: 40px;
+    }
+
+    .sb-left {
+      position: relative;
+      width: 100px;
+      height: 40px;
+      float: left;
+      margin-left: -100%;
+      background-color: blue;
+      left: -100px;
+    }
+
+    .sb-right {
+      position: relative;
+      width: 100px;
+      height: 40px;
+      float: left;
+      margin-left: -100px;
+      background-color: pink;
+      right: -100px;
+    }
+  </style>
+  <div class="sb-con">
+    <div class="sb-main"></div>
+    <div class="sb-left"></div>
+    <div class="sb-right"></div>
+  </div>
+  <!-- 双飞翼 -->
+  <section>双飞翼</section>
+  <style>
+    .sfy-con{
+      height: 40px;
+      overflow: auto;
+    }
+    .sfy-main{
+      float: left;
+      width: 100%;
+      height: 40px;
+      position: relative;
+    }
+    .sfy-wrap{
+      background-color: rebeccapurple;
+      margin: 0 100px;
+      height: 40px;
+    }
+    .sfy-left{
+      width: 100px;
+      height: 40px;
+      float: left;
+      margin-left: -100%;
+      background-color: blue;
+    }
+    .sfy-right{
+      width: 100px;
+      height: 40px;
+      float: left;
+      margin-left: -100px;
+      background-color: pink;
+    }
+  </style>
+  <div class="sfy-con">
+    <div class="sfy-main">
+      <div class="sfy-wrap"></div>
+    </div>
+    <div class="sfy-left"></div>
+    <div class="sfy-right"></div>
+  </div>
+</body>
+
+</html>
