@@ -30,7 +30,7 @@ function createElement (vnode) {
   // 判断新旧节点是否相同
   if (oldVnode === newVnode) return;
   // 新节点有text属性，且没有children
-  if (newVnode.text !== undefined && (vnode.children === undefined || vnode.children.length === 0)) {
+  if (newVnode.text !== undefined && (oldVnode.children === undefined || oldVnode.children.length === 0)) {
     if (newVnode.text !== oldVnode.text) {
       oldVnode.elm.innerText = newVnode.text;
     }
