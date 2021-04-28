@@ -13,7 +13,7 @@ class EventEmitter {
 
   emit(eventName,...args){
     if(this.handles[eventName]){
-      this.handles[eveventNameent].forEach(cb=>{
+      this.handles[eventName].forEach(cb=>{
         cb(...args);
       });
     }

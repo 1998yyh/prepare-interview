@@ -1,10 +1,10 @@
 // 排序
-const list = [5, 4, 12, 37, 9, 1]
+const list = [5, 4, 12, 37, 9, 1];
 
-console.log(quickSort(list))
+console.log(quickSort(list));
 // 冒泡排序
 function bubbleSort(list) {
-  const _list = [...list]
+  const _list = [...list];
   const len = list.length;
   let flag = true;
 
@@ -12,16 +12,15 @@ function bubbleSort(list) {
     for (let j = 0; j < len - i - 1; j++) {
       if (_list[j] > _list[j + 1]) {
         flag = false;
-        [_list[j], _list[j + 1]] = [_list[j + 1], _list[j]]
+        [_list[j], _list[j + 1]] = [_list[j + 1], _list[j]];
       }
     }
     if (flag) {
-      return _list
+      return _list;
     }
   }
-  return _list
+  return _list;
 }
-
 
 // 选择排序
 function selectSort(list) {
@@ -31,11 +30,11 @@ function selectSort(list) {
     let minIndex = i;
     for (let j = i; j < len; j++) {
       if (_list[minIndex] > _list[j]) {
-        minIndex = j
+        minIndex = j;
       }
     }
     if (minIndex !== i) {
-      [_list[minIndex], _list[i]] = [_list[i], _list[minIndex]]
+      [_list[minIndex], _list[i]] = [_list[i], _list[minIndex]];
     }
   }
   return _list;
@@ -47,7 +46,7 @@ function insertSort(list) {
   const len = _list.length;
   for (let i = 0; i < len; i++) {
     let j = i;
-    let temp = _list[j]
+    let temp = _list[j];
     while (j > 0 && _list[j - 1] > temp) {
       _list[j] = _list[j - 1];
       j--;
@@ -56,20 +55,20 @@ function insertSort(list) {
     _list[j] = temp;
   }
 
-  return _list
+  return _list;
 }
 
 // 归并排序
 function mergeSort(list) {
   if (list.length <= 1) {
-    return list
+    return list;
   }
 
   const len = list.length;
-  const mid = Math.floor(len / 2)
-  const left = mergeSort(list.slice(0, mid))
-  const right = mergeSort(list.slice(mid))
-  return mergeArr(left, right)
+  const mid = Math.floor(len / 2);
+  const left = mergeSort(list.slice(0, mid));
+  const right = mergeSort(list.slice(mid));
+  return mergeArr(left, right);
 }
 
 function mergeArr(list1, list2) {
@@ -81,18 +80,18 @@ function mergeArr(list1, list2) {
 
   while (len1 > i && len2 > j) {
     if (list1[i] < list2[j]) {
-      result.push(list1[i])
-      i++
+      result.push(list1[i]);
+      i++;
     } else {
-      result.push(list2[j])
-      j++
+      result.push(list2[j]);
+      j++;
     }
   }
 
   if (len1 > i) {
-    return result.concat(list1.slice(i))
+    return result.concat(list1.slice(i));
   } else {
-    return result.concat(list2.slice(j))
+    return result.concat(list2.slice(j));
   }
 }
 
@@ -101,11 +100,11 @@ function quickSort(nums,left = 0,right = nums.length - 1) {
   if(nums.length > 1){
       let lineIndex  = partition(nums,left,right);
       if(left < lineIndex - 1 ){
-        quickSort(nums,left,lineIndex - 1)
+        quickSort(nums,left,lineIndex - 1);
       }
 
       if(lineIndex < right){
-        quickSort(nums,lineIndex,right)
+        quickSort(nums,lineIndex,right);
       }
   }
 
@@ -114,16 +113,16 @@ function quickSort(nums,left = 0,right = nums.length - 1) {
 
 function partition(arr, left, right) {
   // 选取中间点
-  let pivotValue = arr[Math.floor(left + (right - left) / 2)]
+  let pivotValue = arr[Math.floor(left + (right - left) / 2)];
   let i = left;
   let j = right;
   while (i < j) {
     while (arr[i] < pivotValue) {
-      i++
+      i++;
     }
 
     while (arr[j] > pivotValue) {
-      j--
+      j--;
     }
 
     if (i <= j) {
@@ -133,9 +132,9 @@ function partition(arr, left, right) {
     }
   }
 
-  return i
+  return i;
 }
 
 function swap(arr,i,j){
-  [arr[i],arr[j]] = [arr[j],arr[i]]
+  [arr[i],arr[j]] = [arr[j],arr[i]];
 }

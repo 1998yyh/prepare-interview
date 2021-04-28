@@ -4,7 +4,7 @@ function cloneForce(x) {
   // weakmap = new weakMap;
   // weakmap是否是更好一点
   // =============
-  const root = Object.prototype.toString.call(x) === '[object Array]' ? [] : {};;
+  const root = Object.prototype.toString.call(x) === '[object Array]' ? [] : {};
   // 循环数组
   const loopList = [{
     parent: root,
@@ -52,7 +52,7 @@ function cloneForce(x) {
       } else {
         res[k] = data[k];
       }
-    })
+    });
   }
 
   return root;
