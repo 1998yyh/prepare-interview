@@ -88,7 +88,7 @@ function updateChildren(parentElm,oldCh,newCh){
     }else if (checkSameVnode(oldStartVnode, newStartVnode)) {
       // 新前和旧前
       console.log('命中1');
-      patchVnode(oldStartVnode, newStartVnode);
+      (oldStartVnode, newStartVnode);
       oldStartVnode = oldCh[++oldStartIdx];
       newStartVnode = newCh[++newStartIdx];
     } else if (checkSameVnode(oldEndVnode, newEndVnode)) {

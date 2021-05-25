@@ -1,6 +1,8 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
+    <div v-for="(obj,index) in list" :key="index">{{obj}}</div>
+    <button @click="changelist">click</button>
   </div>
 </template>
 
@@ -11,6 +13,38 @@ export default {
 
   mounted(){
     console.log(this.$store.state);
+  },
+  data(){
+    return{
+      list:[
+        {
+          id:1
+        },
+        {
+          id:2
+        }
+      ]
+    }
+  },
+  methods:{
+    changelist(){
+      // this.list = [
+      //   {
+      //     id:2
+      //   },
+      //   {
+      //     id:1
+      //   }
+      // ]
+      // this.list.splice()
+      // [this.list[0],this.list[1]] = [this.list[1],this.list[0]]
+      // this.list[1] = {id:1}
+      // this.list[0] = {id:2}
+      const list = this.list.splice(0,1)
+      this.list[0] = list[0]
+      // this.list.push(list[0])
+
+    }
   }
 }
 </script>
