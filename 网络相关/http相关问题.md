@@ -90,3 +90,198 @@ http/1.1 规定了以下请求方法(注意，都是大写):
 * 从TCP的角度 GET 请求会把请求报文一次性发出去，而 POST 会分为两个 TCP 数据包，首先发 header 部分(预检请求)，如果服务器响应 100(continue)， 然后发 body 部分。(火狐浏览器除外，它的 POST 请求只发一个 TCP 包)
 
 ### 状态码
+
+#### 1x 
+提示中间状态，实际用的比较少
+
+#### 2x 
+200是最常见的成功状态码，表示一切正常。如果是非 HEAD 请求，服务器返回的响应头都会有 body 数据。
+204也是常见的成功状态码，与 200 OK 基本相同，但响应头没有 body 数据
+206是应用于 HTTP 分块下载或断电续传，表示响应返回的 body 数据并不是资源的全部，而是其中的一部分，也是服务器处理成功的状态。
+
+#### 3x 
+301 永久重定向
+302 临时重定向，说明请求的资源还在，但暂时需要用另一个 URL 来访问 301 和 302 都会在响应头里使用字段 Location，指明后续要跳转的 URL，浏览器会自动重定向新的 URL。
+304 缓存重定向
+
+#### 4x 
+400 表示客户端请求的报文有错误，但只是个笼统的错误
+403 服务端禁止访问
+404 资源在服务器上不存在或未找到，所以无法提供给客户端
+#### 5x 
+500 是个笼统通用的错误码，服务器发生了什么错误，我们并不知道
+501 表示客户端请求的功能还不支持
+502 通常是服务器作为网关或代理时返回的错误码，表示服务器自身工作正常，访问后端服务器发生了错误。
+503 表示服务器当前很忙，暂时无法响应服务器，类似“网络服务正忙，请稍后重试”的意思。
+
+
+### http 常见字段有哪些？
+#### Host
+客户端发送请求时，用来指定服务器的域名
+
+#### Content-Length
+服务器在返回数据时，会有 Content-Length 字段，表明本次回应的数据长度。
+
+#### Connection
+Connection 字段最常用于客户端要求服务器使用 TCP 持久连接，以便其他请求复用
+``` javascript
+Connection: keep-alive
+```
+#### Content-Encoding
+Content-Encoding 字段说明数据的压缩方法。表示服务器返回的数据使用了什么压缩格式
+
+#### Content-type
+Content-Type 字段用于服务器回应时，告诉客户端，本次数据是什么格式
+
+#### Accept
+对于 Accept 系列字段的介绍分为四个部分:数据格式、压缩方式、支持语言和字符集
+
+
+## 对于定长和不定长的数据，HTTP 是怎么传输的？
+### 定长包体
+服务端发送的时候会带Content-Length字段 来指明包的长度；如果内容比这个长度短，会被截取
+```javascript
+const http = require('http');
+const server = http.createSever();
+
+server.on('request',(req,res)=>{
+	if(req === '/'){
+		res.setHeader('Content-Type','text/html')
+		res.setHeader('Content-Length',4);
+		res.write('helloworld');  // 收到的只有hell
+	}
+})
+
+server.listen('8000',()=>{
+	console.lgo('111')
+})
+
+```
+
+如果我们设置的长度偏大，则会传输出错
+
+### 不定长包体
+Transfer-Encoding: chunked
+表示分块传输数据，设置这个字段后会自动产生两个效果:
+
+* Content-Length 字段会被忽略
+* 基于长连接持续推送动态内容
+
+``` javascript
+
+const http = require('http');
+const server = http.createServer();
+
+server.on('request',(req,res)=>{
+	res.setHeader('Content-Type', 'text/html; charset=utf8');
+	res.setHeader('Content-Length', 10);
+	res.setHeader('Transfer-Encoding', 'chunked');
+	res.write("<p>来啦</p>");
+	setTimeout(() => {
+		res.write("第一次传输<br/>");
+	}, 1000);
+	setTimeout(() => {
+		res.write("第二次传输");
+		res.end()
+	}, 2000);
+})
+
+```
+
+
+## HTTP 如何处理大文件的传输？
+
+## HTTP 中如何处理表单数据的提交？
+在 http 中，有两种主要的表单提交的方式，体现在两种不同的Content-Type取值:
+
+### application/x-www-form-urlencoded
+对于application/x-www-form-urlencoded格式的表单内容，有以下特点:
+* 其中的数据会被编码成以&分隔的键值对
+* 字符以URL编码方式编码。如：
+### multipart/form-data
+对于multipart/form-data而言:
+* 请求头中的Content-Type字段会包含boundary，且boundary的值有浏览器默认指定。
+* 数据会分为多个部分，每两个部分之间通过分隔符来分隔，每部分表述均有 HTTP 头部描述子包体，如Content-Type，在最后的分隔符会加上--表示结束。
+
+multipart/form-data 格式最大的特点在于:每一个表单元素都是独立的资源表述。
+在实际的场景中，对于图片等文件的上传，基本采用multipart/form-data而不用application/x-www-form-urlencoded，因为没有必要做 URL 编码，带来巨大耗时的同时也占用了更多的空间。
+
+
+## 如何理解 HTTP 代理？
+
+HTTP 是基于请求-响应模型的协议，一般由客户端发请求，服务器来进行响应。
+当然，也有特殊情况，就是代理服务器的情况。引入代理之后，作为代理的服务器相当于一个中间人的角色，对于客户端而言，表现为服务器进行响应；而对于源服务器，表现为客户端发起请求，具有双重身份。
+
+### 功能
+* 负载均衡 客户端的请求只会先到达代理服务器，后面到底有多少源服务器，IP 都是多少，客户端是不知道的。因此，这个代理服务器可以拿到这个请求之后，可以通过特定的算法分发给不同的源服务器，让各台源服务器的负载尽量平均。
+* 保障安全 利用心跳机制监控后台的服务器，一旦发现故障机就将其踢出集群，并且对于上下行的数据进行过滤，对非法 IP 限流，这些都是代理服务器的工作。
+* 缓存代理，将内容缓存到代理服务器，使得客户端可以直接从代理服务器获得而不用从原服务获取。
+
+### 相关头部字段
+
+#### VIA 
+代理服务器需要标明自己的身份，在 HTTP 传输中留下自己的痕迹，怎么办呢？
+通过Via字段来记录。举个例子，现在中间有两台代理服务器，在客户端发送请求后会经历这样一个过程:
+``` javascript
+客户端 -> 代理1 -> 代理2 -> 源服务器
+``` 
+在源服务器收到请求后，会在请求头拿到这个字段：
+``` javascript
+Via: proxy_server1, proxy_server2
+```
+
+而源服务器响应时，最终在客户端会拿到这样的响应头:
+``` javascript
+Via: proxy_server2, proxy_server1
+``` 
+Via中代理的顺序即为在 HTTP 传输中报文传达的顺序
+
+### X-Forwarded-For
+字面意思就是为谁转发，它记录的是请求方的IP地址(注意，和Via区分开，X-Forwarded-For记录的是请求方这一个IP)。
+
+### X-Real-IP
+是一种获取用户真实 IP 的字段，不管中间经过多少代理，这个字段始终记录最初的客户端的IP。
+相应的，还有X-Forwarded-Host和X-Forwarded-Proto，分别记录客户端(注意哦，不包括代理)的域名和协议名。
+
+### X-Forwarded-For产生的问题
+* 必须解析 HTTP 请求头，然后修改，比直接转发数据性能下降。
+* 在 HTTPS 通信加密的过程中，原始报文是不允许修改的。
+
+由此产生了代理协议，一般使用明文版本，只需要在 HTTP 请求行上面加上这样格式的文本即可:
+
+``` javascript
+// PROXY + TCP4/TCP6 + 请求方地址 + 接收方地址 + 请求端口 + 接收端口
+PROXY TCP4 0.0.0.1 0.0.0.2 1111 2222
+GET / HTTP/1.1
+```
+
+
+
+
+## HTTP1.1
+
+### HTTP1.1 的优点有哪些，怎么体现的？
+HTTP 最凸出的优点是「简单、灵活和易于扩展、应用广泛和跨平台」
+* HTTP 基本的报文格式就是 header + body，头部信息也是 key-value 简单文本的形式，易于理解，降低了学习和使用的门槛
+* HTTP协议里的各类请求方法、URI/URL、状态码、头字段等每个组成要求都没有被固定死，都允许开发人员自定义和扩充
+* 同时 HTTP 由于是工作在应用层（OSI 第七层），则它下层可以随意变化
+* HTTPS 也就是在 HTTP 与 TCP 层之间增加了 SSL/TLS 安全传输层，HTTP/3 甚至把 TCP 层换成了基于 UDP 的 QUIC
+* 互联网发展至今，HTTP 的应用范围非常的广泛，从台式机的浏览器到手机上的各种 APP，从看新闻、刷贴吧到购物、理财、吃鸡，HTTP 的应用片地开花，同时天然具有跨平台的优越性
+
+### 怎么理解SSL/TLS
+TLS 和 SSL是其实是一个同种意思
+* SSL 是"Secure Sockets Layer" 的缩写，中文叫做「安全套接层」。它是在上世纪 90 年代中期，由网景公司设计的。在 OSI 七层模型中处于会话层(第 5 层)
+* TLS 是 "Transport Layer Security"，中文叫做 「传输层安全协议」。因为到了1999年，SSL 因为应用广泛，已经成为互联网上的事实标准。IETF 就在那年把 SSL 标准化。标准化之后的名称改为 TLS
+
+### HTTP1.1 的的缺点呢？
+
+HTTP 协议里有优缺点一体的双刃剑，分别是 无状态、明文传输，同时还有一大缺点不安全
+无状态：服务器不需要记录http状态，减少负担；无状态的坏处，既然服务器没有记忆能力，它在完成有关联性的操作时会非常麻烦。
+如何解决： 携带Cookie
+
+明文传输：可阅读，调试方便；相反的容易被攻击。
+
+不安全：明文传输；不验证通信者身份；不验证报文的完整性；
+
+
+### 那你在说下 HTTP/1.1 的性能如何？
