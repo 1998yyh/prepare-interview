@@ -5,18 +5,23 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <style>
-    div{
-      width: 30%;
-      aspect-ratio: 1/1;
-      background-image: linear-gradient(to bottom,hsla(330,100%,45%,1),hsla(210,100%,45%,1));
-      overflow: hidden;
-    }
-  </style>
 </head>
 <body>
-  <div>
+  <script>
+
+    window.addEventListener('unhandledrejection',function(e){
+      e.preventDefault();
+      console.log(e);
+      // return true
+    })
+    var p = new Promise((res,rej)=>{
+      rej(new Error())
+    })
+
     
-  </div>
+
+
+
+  </script>
 </body>
 </html>
