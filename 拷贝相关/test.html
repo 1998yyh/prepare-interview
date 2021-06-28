@@ -10,19 +10,7 @@
 
   <body>
     <script>
-      function createData(deep, breadth) {
-        var data = {};
-        var temp = data;
 
-        for (var i = 0; i < deep; i++) {
-          temp = temp['data'] = {};
-          for (var j = 0; j < breadth; j++) {
-            temp[j] = c;
-          }
-        }
-
-        return data;
-      }
 
 
       function cloneForce(x) {
@@ -93,25 +81,18 @@
         return null;
       }
 
-      var b = createData(1, 10000000)
-      console.time();
-      var c = JSON.parse(JSON.stringify(b))
-      console.timeEnd()
+      var mydata = {
+        name:1,
+        list:[
+          {
+            name:2,
+            list2:[]
+          },
+          [1,2,3]
+        ]
+      }
 
-      console.time();
-      var d = cloneForce(b)
-      console.timeEnd()
-
-      
-      // var b = createData(40,400)
-      // console.log(b)
-      // console.time();
-      // var c = JSON.parse(JSON.stringify(b))
-      // console.timeEnd()
-
-      // console.time();
-      // var d = cloneForce(b)
-      // console.timeEnd()
+      console.log(cloneForce(mydata))
     </script>
   </body>
 
