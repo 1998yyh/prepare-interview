@@ -62,7 +62,6 @@ class MyPromise {
         // Array.shift() 取出数组第一个元素，然后（）调用，shift不是纯函数，取出后，数组将失去该元素，直到数组为空
         this.onRejectedCallbacks.shift()(reason);
       }
-
     }
   }
 
