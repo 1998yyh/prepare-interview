@@ -8,8 +8,8 @@ export default class Watcher {
     this.getter = parsePath(expression);
     this.callback = callback;
     this.value = this.get();
-
   }
+
   update() {
     this.run();
   }
@@ -30,6 +30,7 @@ export default class Watcher {
   run(){
     this.getAndInvoke(this.callback);
   }
+  
   getAndInvoke(cb){
     const value = this.get();
     if(this.value !== value || typeof value === 'object'){
