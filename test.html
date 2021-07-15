@@ -1,27 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
 </head>
+
 <body>
   <script>
+    function fn(arr) {
+      const len = arr.length;
+      const result = [];
+      const _arr = [];
 
-    window.addEventListener('unhandledrejection',function(e){
-      e.preventDefault();
-      console.log(e);
-      // return true
-    })
-    var p = new Promise((res,rej)=>{
-      rej(new Error())
-    })
+      function dfs(nth) {
+        if (nth >= len) {
+          return
+        }
+        console.log(arr,arr[nth].length);
+        for (let i = 0; i < arr[nth].length; i++) {
+          _arr.push(arr[nth][i]);
+          nth++;
+          dfs(nth)
+          console.log(_arr,'arr');
+          result.push(_arr.slice(0));
+          _arr.pop()
+          nth--;
+        }
+        return result;
+      }
+      return dfs(0)
 
-    
+    }
 
-
-
+    console.log(fn( [['A','B'], ['a','b'], [1, 2]]))
   </script>
 </body>
+
 </html>
