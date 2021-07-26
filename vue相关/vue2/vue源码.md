@@ -1,5 +1,6 @@
 # 源码部分学习
 
+<!-- https://juejin.cn/post/6932659815424458760 -->
 ## 响应式
 Object.defineProperty;
 + 如何处理数组
@@ -20,6 +21,11 @@ watcher 是个中介 通知组件更新
 收集和触发的都是watcher
 
 watcher把自己设置到全局的一个指定位置，然后读取数据，读取了数据，就会触发这个数据的getter，getter中就能得到当前读取的watcher，并把它收集到dep中。
+依赖就是 Watcher。只有 Watcher触发的 getter才会收集依赖,哪个Watcher触发了 getter,就把哪个watcher 收集到 dep 中。
+
+Dep使用发布订阅模式,当数据发生变化时,会循环依赖列表,把所有的watcher都通知一遍。
+
+代码实现的巧妙之处: Watcher把自己设置到全局的一个指定位置,然后读取数据,因为读取了数据,所以会触发这个数据的 getter。在getter中就能得到当前正在读取数据的Watcher,并把这个 Watcher收集到Dep中。
 
 ## 虚拟DOM与diff算法
 
