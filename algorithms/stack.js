@@ -63,7 +63,7 @@ class MinStack {
   push(num) {
     this.stack.push(num)
     // 如果小栈的长度是0或者 栈顶的数字大小大于push的数字，则往minstack里push一个
-    if (!this.minStack.length || this.minStack[this.minStack.length - 1] > num) {
+    if (!this.minStack.length || this.minStack[this.minStack.length - 1] >= num) {
       this.minStack.push(num)
     }
   }
