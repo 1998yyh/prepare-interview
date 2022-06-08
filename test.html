@@ -1,53 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <style>
-    body{
-      font-size: calc(100vw * 100 / 1920);
-    }
-    p{
-      font-size: 2rem;
-    }
-  </style>
-</head>
-
-<body>
-  <p>
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum, soluta, dolores aliquid ipsum quod quis expedita magni, ex iusto fugit facilis consequatur eaque nemo. Culpa aperiam ex necessitatibus atque impedit.
-  </p>
-  <script>
-    function fn(arr) {
-      const len = arr.length;
-      const result = [];
-      const _arr = [];
-
-      function dfs(nth) {
-        if (nth >= len) {
-          return
-        }
-        console.log(arr,arr[nth].length);
-        for (let i = 0; i < arr[nth].length; i++) {
-          _arr.push(arr[nth][i]);
-          nth++;
-          dfs(nth)
-          console.log(_arr,'arr');
-          result.push(_arr.slice(0));
-          _arr.pop()
-          nth--;
-        }
-        return result;
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+      div {
+        width: 0%;
+        border: 100px solid transparent;
+        border-bottom-color: black;
       }
-      return dfs(0)
+    </style>
+  </head>
 
-    }
+  <body>
 
-    console.log(fn( [['A','B'], ['a','b'], [1, 2]]))
-  </script>
-</body>
+    <script>
+      const arr = [
+        {
+          a:1,
+          b:2,
+          c:3,
+        },
+        {
+          a:3,
+          b:4,
+          d:5,
+        },
+        {
+          m:1,
+          n:2
+        }
+      ]
+
+
+      const totalMap = arr.reduce((pre,cur)=>{
+        pre = {
+          ...pre,
+          ...cur
+        }
+        return pre
+      },{})
+
+      Object.keys(totalMap).forEach(key=>{
+        totalMap[key] = 0;
+      })
+
+      const newArr = arr.map(item=>({
+        ...totalMap,
+        ...item
+      }))
+
+      
+      console.log(JSON.stringify(newArr))
+    </script>
+  </body>
 
 </html>

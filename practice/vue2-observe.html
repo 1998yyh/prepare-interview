@@ -1,14 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <script>
-    
-  </script>
-</body>
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+
+  <body>
+    <script>
+      const arrayProperty = Array.prototype;
+      const newArrayProp = Object.create(arrayProperty)
+
+      ['push','pop','shift','unshift','splice','slice'].forEach(method=>{
+        newArrayProto[method] = function(){
+          console.log('更新视图');
+          arrayProto[method].call(this,...arguments);
+        };
+      });
+      function observe(target) {
+        if (typeof target !== 'object' && target !== null) {
+          return target
+        }
+
+        if (Array.isArray(target)) {
+          target.__proto = newArrayProp;
+        }
+        
+        for(let i in target){
+          defineReactive(target,i,target[i])
+        }
+      }
+
+      function defineReactive(taget, key, value) {
+        // 深度监听
+        observe(value);
+        Object.defineProperty(taget, key, {
+          get() {
+            return value;
+          },
+          set(newValue) {
+            // 防止从基本类型变为对象监听丢失。
+            observe(newValue);
+            if (newValue !== value) {
+              value = newValue;
+              console.log('更新视图');
+            }
+          }
+        });
+
+      }
+    </script>
+  </body>
+
 </html>

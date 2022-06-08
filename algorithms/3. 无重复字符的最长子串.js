@@ -9,19 +9,25 @@
  * @return {number}
  */
 var lengthOfLongestSubstring = function (s) {
-  let left = 0;
-  let right = 1;
-  const arr = [];
+  const set = new Set();
 
-  while(right < s.length){
-    const node = s.substring(left,right);
-    if(arr.includes(node)){
-      continue;
-    }else{
-      while(){
-        right++;
-      }
-   
+  const l = s.length;
+
+  let rk = -1;
+  let res = 0;
+
+  for (let i = 0; i < l; i++) {
+    if (i !== 0) {
+      set.delete(s.charAt(i - 1))
     }
+
+    while (rk + 1 < l && !set.has(s.charAt(rk + 1))) {
+      set.add(s.charAt(rk + 1))
+      rk++
+    }
+
+    res = Math.max(res,rk - i + 1)
   }
+
+  return res
 };
