@@ -1,61 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .a{
+      width: 200px;
+      height: 200px;
+      border: 10px solid;
+      background-color: red;
+    }
 
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-      div {
-        width: 0%;
-        border: 100px solid transparent;
-        border-bottom-color: black;
-      }
-    </style>
-  </head>
+    .b{
+      width: 200px;
+      height: 200px;
+      border: 10px solid;
 
-  <body>
-
-    <script>
-      const arr = [
-        {
-          a:1,
-          b:2,
-          c:3,
-        },
-        {
-          a:3,
-          b:4,
-          d:5,
-        },
-        {
-          m:1,
-          n:2
-        }
-      ]
-
-
-      const totalMap = arr.reduce((pre,cur)=>{
-        pre = {
-          ...pre,
-          ...cur
-        }
-        return pre
-      },{})
-
-      Object.keys(totalMap).forEach(key=>{
-        totalMap[key] = 0;
-      })
-
-      const newArr = arr.map(item=>({
-        ...totalMap,
-        ...item
-      }))
-
-      
-      console.log(JSON.stringify(newArr))
-    </script>
-  </body>
-
+      box-sizing: border-box;
+      background-color: green;
+    }
+  </style>
+</head>
+<body>
+  <div class="a"></div>
+  <div class="b"></div>
+</body>
 </html>
