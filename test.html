@@ -5,26 +5,27 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <style>
-    .a{
-      width: 200px;
-      height: 200px;
-      border: 10px solid;
-      background-color: red;
-    }
-
-    .b{
-      width: 200px;
-      height: 200px;
-      border: 10px solid;
-
-      box-sizing: border-box;
-      background-color: green;
-    }
-  </style>
 </head>
 <body>
-  <div class="a"></div>
-  <div class="b"></div>
+  <script>
+    const obj = {Travel: "travel", Purchase: "purchase",AAA:"aaa"}
+
+    const arr1 = ['Travel', 'Purchase','AAA'] // 标题
+
+    const arr2 = ['Travel','Purchase']
+
+
+    function fn(oldObj,newObj){
+      const arr = Object.keys(oldObj);
+      const arr2 = Object.keys(newObj);
+
+      Object.keys(oldObj).find(item=>Object.keys(newObj))
+
+      arr1.splice(arr1.indexOf(oldValue),1,newValue)
+      arr2.splice(arr2.indexOf(oldValue),1,newValue)
+    }
+
+
+  </script>
 </body>
 </html>
