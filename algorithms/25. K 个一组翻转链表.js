@@ -12,13 +12,35 @@
  * @return {ListNode}
  */
 var reverseKGroup = function (head, k) {
+  const hair = new ListNode();
+  hair.next = head;
+  let pre = hair;
 
+  while(hair){
+    for(let i = 0;i<k;i++){
+      hair = hair.next;
+      if(!head){
+        return pre.next
+      }
+    }
+
+    const nex = hair.next;
+    [head, tail] = myReverse(head, tail);
+    pre.next = head;
+    tail.next = nex;
+    pre = tail;
+    head = tail.next;
+  }
 };
 
 
-function reverse() {
-
-
+function reverse(head,tail) {
+  let prev = tail.next;
+  let p = head;
+  while(pre !==tail){
+    const next = p.next;
+    p.next = prev;
+  }
 }
 
 

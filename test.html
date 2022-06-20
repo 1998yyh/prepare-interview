@@ -8,24 +8,18 @@
 </head>
 <body>
   <script>
-    const obj = {Travel: "travel", Purchase: "purchase",AAA:"aaa"}
-
-    const arr1 = ['Travel', 'Purchase','AAA'] // 标题
-
-    const arr2 = ['Travel','Purchase']
-
-
-    function fn(oldObj,newObj){
-      const arr = Object.keys(oldObj);
-      const arr2 = Object.keys(newObj);
-
-      Object.keys(oldObj).find(item=>Object.keys(newObj))
-
-      arr1.splice(arr1.indexOf(oldValue),1,newValue)
-      arr2.splice(arr2.indexOf(oldValue),1,newValue)
+    function add(){
+      const arg = [...arguments]
+      return function(){
+        const _arg = [...arguments];
+        if(_arg.length > 0){
+          arg.concat(_arg)
+          return arguments.callee
+        }else{
+          return arg.reduce((a,b)=>a+b)
+        }
+      }
     }
-
-
   </script>
 </body>
 </html>

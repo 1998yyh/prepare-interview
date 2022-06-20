@@ -1,6 +1,7 @@
 var findKthLargest = function (nums, k) {
   function quickSort(left, right) {
     var idx = partion(left, right);
+    console.log(idx)
     if (idx > k - 1) {
       return quickSort(left, idx - 1);
     } else if (idx < k - 1) {
@@ -23,3 +24,5 @@ var findKthLargest = function (nums, k) {
   }
   return quickSort(0, nums.length - 1);
 };
+
+findKthLargest([3,2,1,5,6,4],2)
